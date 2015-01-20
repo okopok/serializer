@@ -26,6 +26,10 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
+use JMS\Serializer\Tests\Fixtures\Discriminator\InMiddle;
+use JMS\Serializer\Tests\Fixtures\Discriminator\InMiddle\Heron;
+use JMS\Serializer\Tests\Fixtures\Discriminator\InMiddle\Human;
+use JMS\Serializer\Tests\Fixtures\Discriminator\InMiddle\Raven;
 use JMS\Serializer\Tests\Fixtures\Garage;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
@@ -816,6 +820,61 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
                 $this->deserialize(
                     $this->getContent('car_without_type'),
                     'JMS\Serializer\Tests\Fixtures\Discriminator\Car'
+                ),
+                'Class is resolved correctly when concrete sub-class is used and no type is defined.'
+            );
+        }
+    }
+
+    public function testPolymorphicInMiddleObjects()
+    {
+        $this->assertEquals(
+            $this->getContent('heron'),
+            $this->serialize(new Heron(2))
+        );
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals(
+                new Human(1),
+                $this->deserialize(
+                    $this->getContent('human'),
+                    'JMS\Serializer\Tests\Fixtures\Discriminator\InMiddle\Human'
+                ),
+                'Class is resolved correctly when concrete sub-class is used.'
+            );
+
+            $this->assertEquals(
+                new Raven(3),
+                $this->deserialize(
+                    $this->getContent('raven'),
+                    'JMS\Serializer\Tests\Fixtures\Discriminator\InMiddle\Raven'
+                ),
+                'Class is resolved correctly when concrete sub-class is used.'
+            );
+
+            $this->assertEquals(
+                new Heron(2),
+                $this->deserialize(
+                  $this->getContent('heron'),
+                  'JMS\Serializer\Tests\Fixtures\Discriminator\InMiddle\Heron'
+                ),
+                'Class is resolved correctly when concrete sub-class is used.'
+            );
+
+            $this->assertEquals(
+                new Heron(2),
+                $this->deserialize(
+                    $this->getContent('heron'),
+                    'JMS\Serializer\Tests\Fixtures\Discriminator\InMiddle\Bird'
+                ),
+                'Class is resolved correctly when least supertype is used.'
+            );
+
+            $this->assertEquals(
+                new Heron(2),
+                $this->deserialize(
+                    $this->getContent('heron_without_type'),
+                    'JMS\Serializer\Tests\Fixtures\Discriminator\InMiddle\Heron'
                 ),
                 'Class is resolved correctly when concrete sub-class is used and no type is defined.'
             );
