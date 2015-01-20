@@ -178,22 +178,18 @@ class ClassMetadata extends MergeableClassMetadata
 
             $this->discriminatorValue = $typeValue;
 
-            if (isset($this->propertyMetadata[$this->discriminatorFieldName])
-                    && ! $this->propertyMetadata[$this->discriminatorFieldName] instanceof StaticPropertyMetadata) {
-                throw new \LogicException(sprintf(
-                    'The discriminator field name "%s" of the base-class "%s" conflicts with a regular property of the sub-class "%s".',
+            if (isset($this->propertyMetadata[$this->discriminatorFieldName])) {
+                $discriminatorProperty = $this->propertyMetadata[$this->discriminatorFieldName];
+            } else {
+                $discriminatorProperty = new StaticPropertyMetadata(
+                    $this->name,
                     $this->discriminatorFieldName,
-                    $this->discriminatorBaseClass,
-                    $this->name
-                ));
+                    $typeValue
+                );
+
+                $discriminatorProperty->serializedName = $this->discriminatorFieldName;
             }
 
-            $discriminatorProperty = new StaticPropertyMetadata(
-                $this->name,
-                $this->discriminatorFieldName,
-                $typeValue
-            );
-            $discriminatorProperty->serializedName = $this->discriminatorFieldName;
             $this->propertyMetadata[$this->discriminatorFieldName] = $discriminatorProperty;
         }
 
