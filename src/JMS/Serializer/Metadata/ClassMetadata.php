@@ -178,6 +178,8 @@ class ClassMetadata extends MergeableClassMetadata
 
             $this->discriminatorValue = $typeValue;
 
+            // TODO: Получение мета-данных для дискриминатора, надо также сделать и для десериализации,
+            // TODO: дабы избавиться от костыля в GraphNavigator->resolveMetadata для XML-атрибутов.
             if (isset($this->propertyMetadata[$this->discriminatorFieldName])) {
                 $discriminatorProperty = $this->propertyMetadata[$this->discriminatorFieldName];
             } else {
