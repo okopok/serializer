@@ -11,6 +11,9 @@
             "email": "schmittjoh@gmail.com"
         }
     ],
+    "conflict": {
+         "jms/serializer": "*"
+    },
     "replace": {
         "jms/serializer": "*"   
     },
